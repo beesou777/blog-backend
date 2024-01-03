@@ -3,7 +3,10 @@ import generateToken from "../../utility/jwt"
 import { Request, Response } from "express"
 import asyncHandler from "express-async-handler"
 import dotenv from "dotenv"
+import { cloudinary } from "../../utility/cloudinary";
+// import {v2 as cloudinary} from "cloudinary"
 dotenv.config()
+
 
 // @desc Register a new user
 // @route POST /api/users/register
@@ -130,10 +133,12 @@ const getUserProfile = asyncHandler(async (req: any, res: Response, next: any) =
 // @access Private
 const updateUserProfile = asyncHandler(async(req:any,res:Response,next:any)=>{
   const user = await User.findById(req.user._id)
+    const file = req.files.profile;
+    const result = await cloudinary.uploader.upload(file.tempFilePath,{ max_file_size: 20000000 });
   if(user){
     user.name = req.body.name
     user.gender = req.body.gender
-    user.profile = req.user.profile
+    user.profile = result.url
 
     if(req.body.password){
       user.password = req.body.password
