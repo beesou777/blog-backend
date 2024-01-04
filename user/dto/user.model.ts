@@ -1,14 +1,22 @@
 import mongoose from "mongoose";
 import  bcrypt from "bcryptjs"
 
-export interface User {
+
+interface User {
   name: string;
   email: string;
-  phone: number;
+  phone: string;
   gender: string;
   profile: string;
   password: string;
   isAdmin: boolean;
+  role:String;
+  viewedBy:String[];
+  followers:String[];
+  following:String[];
+  postCount:Number;
+  active:Boolean;
+  posts:String[];
 }
 
 export interface UserDocument extends User,mongoose.Document {
@@ -48,7 +56,37 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     required: true,
     default: false,
-  }
+  },
+  role:{
+    type:String,
+     enum:["Admin","Guest","Editor"]
+  },
+  viewedBy:[{
+    type:mongoose.Schema.Types.ObjectId,
+    ref:"User"
+  }],
+  followers:[{
+    type:mongoose.Schema.Types.ObjectId,
+    ref:"User"
+  }],
+  following:[{
+    type:mongoose.Schema.Types.ObjectId,
+    ref:"User"
+  }],
+  postCount:{
+    type:Number,
+    default:0
+  },
+  active:{
+    type:Boolean,
+    default:true
+  },
+  posts:[
+    {
+      type:mongoose.Schema.Types.ObjectId,
+      ref:"Post"
+    }
+  ]
 
 },{timestamps:true});
 

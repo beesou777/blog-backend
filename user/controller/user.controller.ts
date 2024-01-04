@@ -7,7 +7,6 @@ import { cloudinary } from "../../utility/cloudinary";
 // import {v2 as cloudinary} from "cloudinary"
 dotenv.config()
 
-
 // @desc Register a new user
 // @route POST /api/users/register
 // @access Public

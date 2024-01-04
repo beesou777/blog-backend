@@ -6,4 +6,11 @@ interface User {
     profile: string;
     password: string;
     isAdmin: boolean;
+    role:String;
+    viewedBy:String[];
+    followers:String[];
+    following:String[];
+    postCount:Number;
+    active:Boolean;
+    posts:String[];
 }
