@@ -10,7 +10,7 @@ dotenv.config()
 // @desc Register a new user
 // @route POST /api/users/register
 // @access Public
-const registerUser = asyncHandler(async (req ,res, next) => {
+const registerUser = asyncHandler(async (req, res, next) => {
   const {
     name,
     email,
@@ -53,7 +53,7 @@ const registerUser = asyncHandler(async (req ,res, next) => {
       message: "User already exists.",
     });
   }
-  
+
   const user = await User.create({
     name,
     email,
@@ -68,10 +68,10 @@ const registerUser = asyncHandler(async (req ,res, next) => {
       user,
       token: generateToken(user._id)
     })
-  }else{
+  } else {
     res.status(400)
     return next({
-      message:"Invalid user data"
+      message: "Invalid user data"
     })
   }
 })
@@ -79,7 +79,7 @@ const registerUser = asyncHandler(async (req ,res, next) => {
 // @desc Auth user & get token
 // @route POST /api/users/login
 // @access Public
-const loginUser = asyncHandler(async (req,res, next) => {
+const loginUser = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
 
   const user = await User.findOne({
@@ -119,10 +119,10 @@ const getUserProfile = asyncHandler(async (req: any, res: Response, next: any) =
       profile: user.profile,
       isAdmin: false,
     })
-  }else{
+  } else {
     res.status(401)
     return next({
-      message:"User Not Found"
+      message: "User Not Found"
     })
   }
 })
@@ -130,16 +130,16 @@ const getUserProfile = asyncHandler(async (req: any, res: Response, next: any) =
 // @desc Update user profile
 // @route PUT /api/users/profile
 // @access Private
-const updateUserProfile = asyncHandler(async(req:any,res:Response,next:any)=>{
+const updateUserProfile = asyncHandler(async (req: any, res: Response, next: any) => {
   const user = await User.findById(req.user._id)
-    const file = req.files.profile;
-    const result = await cloudinary.uploader.upload(file.tempFilePath,{ max_file_size: 20000000 });
-  if(user){
+  const file = req.files.profile;
+  const result = await cloudinary.uploader.upload(file.tempFilePath, { max_file_size: 20000000 });
+  if (user) {
     user.name = req.body.name
     user.gender = req.body.gender
     user.profile = result.url
 
-    if(req.body.password){
+    if (req.body.password) {
       user.password = req.body.password
     }
 
@@ -154,10 +154,10 @@ const updateUserProfile = asyncHandler(async(req:any,res:Response,next:any)=>{
       profile: user.profile,
       isAdmin: false,
     })
-  }else{
+  } else {
     res.status(401)
     return next({
-      message:"User not found"
+      message: "User not found"
     })
   }
 })
@@ -165,14 +165,14 @@ const updateUserProfile = asyncHandler(async(req:any,res:Response,next:any)=>{
 // @desc Get all users
 // @route GET /api/users
 // @access Private/Admin
-const getUsers = asyncHandler(async (req:any,res:Response,next:any)=>{
+const getUsers = asyncHandler(async (req: any, res: Response, next: any) => {
   const users = await User.find({}).select("-password")
-  if(users){
+  if (users) {
     res.json(users)
-  }else{
+  } else {
     res.status(401)
     return next({
-      message:"Not Authorized ,no token"
+      message: "Not Authorized ,no token"
     })
   }
 })
@@ -180,16 +180,16 @@ const getUsers = asyncHandler(async (req:any,res:Response,next:any)=>{
 // @desc Delete a user
 // @route DELETE /api/users/:id
 // @access Private/Admin
-const deleteUser = asyncHandler(async(req:any,res:Response,next:any)=>{
+const deleteUser = asyncHandler(async (req: any, res: Response, next: any) => {
   const user = await User.findByIdAndDelete(req.params.id).select("-password")
-  if(user){
+  if (user) {
     res.json({
-      message:"User Removed"
+      message: "User Removed"
     })
-  }else{
+  } else {
     res.status(401)
     return next({
-      message:"User not found"
+      message: "User not found"
     })
   }
 })
@@ -197,14 +197,14 @@ const deleteUser = asyncHandler(async(req:any,res:Response,next:any)=>{
 // @desc Get user by Id
 // @route GET /api/users/:id
 // @access Private/Admin
-const getUserById = asyncHandler(async (req:any,res:Response,next:any)=>{
+const getUserById = asyncHandler(async (req: any, res: Response, next: any) => {
   const user = await User.findById(req.params.id).select("-password")
-  if(user){
+  if (user) {
     res.json(user)
-  }else{
+  } else {
     res.status(401)
     return next({
-      message:"User Not Found"
+      message: "User Not Found"
     })
   }
 })
@@ -212,9 +212,9 @@ const getUserById = asyncHandler(async (req:any,res:Response,next:any)=>{
 // desc Update user
 // @route PUT /api/users/:id
 // @access Private/Admin
-const updateUser = asyncHandler(async (req:any,res:Response,next:any)=>{
+const updateUser = asyncHandler(async (req: any, res: Response, next: any) => {
   const user = await User.findById(req.params.id)
-  if(user){
+  if (user) {
     user.name = req.body.name || req.user
     user.phone = req.body.phone || req.user
     user.gender = req.body.gender || req.user
@@ -230,15 +230,108 @@ const updateUser = asyncHandler(async (req:any,res:Response,next:any)=>{
       profile: user.profile,
       isAdmin: false,
     })
-  }else{
+  } else {
     res.status(401)
     return next({
-      message:"User Not Found"
+      message: "User Not Found"
     })
   }
 })
 
-export{
+// desc get views
+// @route PUT /api/users/profile-viewer/:id
+// @access Private
+const profileViwe = asyncHandler(async (req: any, res: Response, next: any) => {
+  const user = await User.findById(req.params.id)
+  const whoViewd = await User.findById(req.user)
+
+  if (user && whoViewd) {
+    const isUserAlreadyViewed = user.viewedBy.find(viewer => viewer.toString() === whoViewd._id.toJSON())
+    if (isUserAlreadyViewed) {
+      return next({
+        message: "Already viewed"
+      })
+    } else {
+      user.viewedBy.push(whoViewd._id)
+      await user.save()
+      res.json({ message: "successfully viewed" })
+    }
+  }
+})
+
+const followingUser = asyncHandler(async (req: any, res: Response, next: any) => {
+  try {
+    const userToFollow = await User.findById(req.params.id);
+    const userWhoFollowed = await User.findById(req.user);
+
+    if (userToFollow && userWhoFollowed) {
+      const isUserAlreadyFollowed = userWhoFollowed.following.some(
+        follower => follower.toString() === userToFollow._id.toString()
+      );
+
+      if (isUserAlreadyFollowed) {
+        return res.status(400).json({
+          message: "Already followed"
+        });
+      } else {
+        userToFollow.followers.push(userWhoFollowed._id);
+        userWhoFollowed.following.push(userToFollow._id);
+
+        await userWhoFollowed.save();
+        await userToFollow.save();
+
+        return res.json({
+          message: "Successfully followed"
+        });
+      }
+    } else {
+      return res.status(404).json({
+        message: "User not found"
+      });
+    }
+  } catch (error) {
+    return next(error);
+  }
+});
+
+
+const unfollowUser = asyncHandler(async (req: any, res: Response, next: any) => {
+
+  const userToBeunFollow = await User.findById(req.params.id)
+  // console.log(userToBeunFollow)
+  const userWhoUnfollowed = await User.findById(req.user)
+
+  if (userToBeunFollow && userWhoUnfollowed) {
+    const isUserAlreadyFollowed = userToBeunFollow.followers.find(follower => follower.toString() === userWhoUnfollowed._id.toString())
+
+    if (!isUserAlreadyFollowed) {
+      return next({
+        message: "You have not followed tis user"
+      })
+    } else {
+      userToBeunFollow.followers = userToBeunFollow.followers.filter(
+        follower => follower.toString() !== userWhoUnfollowed._id.toString()
+      )
+      await userToBeunFollow.save()
+
+      userWhoUnfollowed.following = userWhoUnfollowed.following.filter(
+        following => following.toString() !== userToBeunFollow._id.toString()
+      )
+      await userWhoUnfollowed.save()
+
+      res.json({
+        message: "Successfully unFollowed"
+      })
+    }
+  }
+})
+// const followingUser = asyncHandler(async (req:any,res:Response,next:any)=>{
+
+// })
+// const followingUser = asyncHandler(async (req:any,res:Response,next:any)=>{
+
+// })
+export {
   loginUser,
   registerUser,
   getUserById,
@@ -246,5 +339,8 @@ export{
   getUsers,
   deleteUser,
   updateUser,
-  updateUserProfile
+  updateUserProfile,
+  profileViwe,
+  followingUser,
+  unfollowUser
 };
