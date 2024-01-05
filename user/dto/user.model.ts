@@ -73,10 +73,6 @@ const userSchema = new mongoose.Schema({
     type:mongoose.Schema.Types.ObjectId,
     ref:"User"
   }],
-  postCount:{
-    type:Number,
-    default:0
-  },
   active:{
     type:Boolean,
     default:true
@@ -88,8 +84,35 @@ const userSchema = new mongoose.Schema({
     }
   ]
 
-},{timestamps:true});
+},{
+  timestamps:true,
+  toJSON:{virtuals:true}
+});
 
+// initials name
+// userSchema.virtual("initial").get(function(){
+//   return `${this.name}`
+// })
+
+// post count
+userSchema.virtual("postCount").get(function(){
+  return this.posts.length
+})
+
+// follower count
+userSchema.virtual("followerCount").get(function(){
+  return this.followers.length
+})
+
+// following count
+userSchema.virtual("followingCount").get(function(){
+  return this.following.length
+})
+
+// viewers 
+userSchema.virtual("viewerCount").get(function (){
+  return this.viewedBy.length
+})
 
 userSchema.methods.comparePassword = async function(
   enteredPassword:string
