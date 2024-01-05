@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 interface Category {
     user:String;
     title:String;
+    slug:String;
 }
 
 export interface categoryDocument extends Category,mongoose.Document{
@@ -18,7 +19,14 @@ const categorySchema = new mongoose.Schema({
     },
     title:{
         type:String,
-        required:true
+        required:true,
+        trim:true
+    },
+    slug:{
+        type:String,
+        unique:true,
+        required:true,
+        trim:true
     }
 },{
     timestamps:true

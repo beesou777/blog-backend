@@ -22,12 +22,12 @@ router.route("/").get(protect, admin, getUsers);
 router.route("/register").post(registerUser);
 
 router.post("/login", loginUser);
-// 
+
 router
   .route("/profile")
   .get(protect, getUserProfile)
   .put(protect, updateUserProfile);
-// 
+
 router
   .route("/:id")
   .delete(protect, admin, deleteUser)
@@ -44,4 +44,5 @@ router
 router
   .route("/un-follow/:id")
   .get(protect, unfollowUser)
+  
 export default router

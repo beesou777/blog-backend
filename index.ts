@@ -10,6 +10,7 @@ import dotenv from "dotenv"
 dotenv.config();
 
 import userRoute from "./user/router/user.route"
+import categoryRoute from "./category/router/category.router"
 
 connectDB()
 
@@ -39,7 +40,7 @@ app.get("/", (req: Request, res: Response) => {
 })
 
 app.use("/api/users", userRoute);
-
+app.use("/api/blog",categoryRoute)
 
 app.use(errorHandler)
 app.use(notFound)

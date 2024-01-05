@@ -320,12 +320,7 @@ const unfollowUser = asyncHandler(async (req: any, res: Response, next: any) => 
     });
   }
 })
-// const followingUser = asyncHandler(async (req:any,res:Response,next:any)=>{
 
-// })
-// const followingUser = asyncHandler(async (req:any,res:Response,next:any)=>{
-
-// })
 export {
   loginUser,
   registerUser,
