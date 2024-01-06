@@ -10,9 +10,9 @@ import {
     fetchSinglePost,
     likePost,
     updatePost
-} from "../controller/post.controller"
+} from "../posts/controller/post.controller"
 
-import { admin, protect } from "../../middlewares/auth.middleware"
+import { admin, protect } from "../middlewares/auth.middleware"
 
 
 router

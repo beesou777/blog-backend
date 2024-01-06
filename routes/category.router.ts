@@ -7,9 +7,9 @@ import {
     getCategory,
     getCategoryBySlug,
     updateCategory
-} from "../controller/category.controller"
+} from "../category/controller/category.controller"
 
-import { admin, protect } from "../../middlewares/auth.middleware"
+import { admin, protect } from "../middlewares/auth.middleware"
 
 
 router

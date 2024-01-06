@@ -14,8 +14,8 @@ import {
   followingUser,
   unfollowUser,
 
-} from "../controller/user.controller"
-import { admin, protect } from "../../middlewares/auth.middleware"
+} from "../user/controller/user.controller"
+import { admin, protect } from "../middlewares/auth.middleware"
 
 router.route("/").get(protect, admin, getUsers);
 
