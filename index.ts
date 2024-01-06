@@ -11,6 +11,7 @@ dotenv.config();
 
 import userRoute from "./user/router/user.route"
 import categoryRoute from "./category/router/category.router"
+import postRoute from "./posts/router/post.router"
 
 connectDB()
 
@@ -41,6 +42,7 @@ app.get("/", (req: Request, res: Response) => {
 
 app.use("/api/users", userRoute);
 app.use("/api/blog",categoryRoute)
+app.use("/api/blog",postRoute)
 
 app.use(errorHandler)
 app.use(notFound)

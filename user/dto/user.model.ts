@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import  bcrypt from "bcryptjs"
-
+import Post from "../../posts/dto/Post.models";
 
 interface User {
   name: string;
@@ -17,6 +17,8 @@ interface User {
   postCount:Number;
   active:Boolean;
   posts:String[];
+  createdAt:Date;
+  updatedAt:Date;
 }
 
 export interface UserDocument extends User,mongoose.Document {
@@ -93,6 +95,48 @@ const userSchema = new mongoose.Schema({
 // userSchema.virtual("initial").get(function(){
 //   return `${this.name}`
 // })
+
+userSchema.pre("findOne",async function(this:any,next:any){
+  const userId = this._conditions._id
+  const posts = await Post.find({user:userId})
+  const lastPost = posts[posts.length - 1]
+  const lastPostDate = new Date(lastPost?.createdAt)
+  const lastPostDateStr = lastPostDate.toDateString()
+
+  userSchema.virtual("lastPostDate").get(function(){
+    return lastPostDateStr
+  })
+
+  // -------------check if user is inactive for 30 days ----------------
+  const currentDate = new Date();
+  const diff = currentDate.getDate() - lastPostDate.getDate()
+  const diffInDays = diff/(1000*3600 * 24)
+  
+  if(diffInDays > 30){
+    userSchema.virtual("isInactive").get(function(){
+      return true
+    })
+  }else{
+    userSchema.virtual("isInactive").get(function(){
+      return false
+    })
+  }
+
+  const daysAgo = Math.floor(diffInDays)
+  userSchema.virtual("lastActive").get(function(){
+    if(daysAgo <= 0){
+      return "Today"
+    }
+    if(daysAgo === 1){
+      return "Yesterday"
+    }
+    if(daysAgo > 1){
+      return `${daysAgo} days ago`
+    }
+  })
+  next()
+})
+
 
 // post count
 userSchema.virtual("postCount").get(function(){
