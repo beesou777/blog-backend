@@ -10,6 +10,7 @@ interface Post {
     user:String;
     image:String;
     slug:String
+    comments:String[]
 }
 
 export interface postDocument extends Post,mongoose.Document{
@@ -56,7 +57,13 @@ const postSchema = new mongoose.Schema({
         type:String,
         unique:true,
         required:true
-    }
+    },
+    comments:[
+        {
+            type:mongoose.Schema.Types.ObjectId,
+            ref:"Comment"
+        }
+    ]
 },{
     toJSON:{virtuals:true},
     timestamps:true

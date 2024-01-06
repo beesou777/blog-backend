@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { mongo } from "mongoose";
 import  bcrypt from "bcryptjs"
 import Post from "../../posts/dto/Post.models";
 
@@ -19,6 +19,7 @@ interface User {
   posts:String[];
   createdAt:Date;
   updatedAt:Date;
+  comments:string[]
 }
 
 export interface UserDocument extends User,mongoose.Document {
@@ -83,6 +84,12 @@ const userSchema = new mongoose.Schema({
     {
       type:mongoose.Schema.Types.ObjectId,
       ref:"Post"
+    }
+  ],
+  comments:[
+    {
+      type:mongoose.Schema.Types.ObjectId,
+      ref:'Comment'
     }
   ]
 

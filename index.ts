@@ -12,8 +12,7 @@ dotenv.config();
 import userRoute from "./routes/user.route"
 import categoryRoute from "./routes/category.router"
 import postRoute from "./routes/post.router"
-import swaggerJsdoc from "swagger-jsdoc";
-import swaggerUi from "swagger-ui-express";
+import commentRoute from "./routes/comment.route"
 
 
 connectDB()
@@ -44,7 +43,6 @@ const options = {
   apis:['./routes/*.ts']
 }
 
-const swaggerSpec = swaggerJsdoc(options)
 
 
 app.use(cookieParser());
@@ -64,18 +62,7 @@ app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use("/api/users", userRoute);
 app.use("/api/blog",categoryRoute)
 app.use("/api/blog",postRoute)
-
-app.use("/api",swaggerUi.serve,swaggerUi.setup(swaggerSpec))
-/**
- * @swagger
- * /:
- *  get:
- *      summary:this api is used to check if get method is working
- *      description : this api is used to check if get method is working
- *      responses:
- *            200:
- *                description: To test get method
- */
+app.use("/api/blog",commentRoute)
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Api is running on port" + PORT)
