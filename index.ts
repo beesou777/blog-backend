@@ -27,24 +27,6 @@ app.use(
   })
 );
 
-const options = {
-  definition:{
-    openapi:'3.0.0',
-    info:{
-      title:"blog title",
-      version:'1.0.0'
-    },
-    servers:[
-      {
-        url : 'http://localhost:8000/'
-      }
-    ]
-  },
-  apis:['./routes/*.ts']
-}
-
-
-
 app.use(cookieParser());
 app.use(
   fileUpload({
