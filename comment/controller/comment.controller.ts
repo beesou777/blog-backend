@@ -1,41 +1,41 @@
 import Comment from "../../comment/dto/comment.models"
 import asyncHandler from "express-async-handler"
-import { Response,Request } from "express"
+import { Response, Request } from "express"
 import User from "../../user/dto/user.model"
 import Post from "../../posts/dto/Post.models"
 
-const createComment = asyncHandler(async(req:any,res:Response,next:any)=>{
+const createComment = asyncHandler(async (req: any, res: Response, next: any) => {
     const post = await Post.findById(req.params.id)
 
     const comment = await Comment.create({
-        user:req.user,
-        post:post?._id,
-        description:req.body.comment,
+        user: req.user,
+        post: post?._id,
+        description: req.body.comment,
 
     })
-    if(comment){
+    if (comment) {
         post?.comments.push(comment._id)
 
         const user = await User.findById(req.user)
         user?.comments.push(comment._id)
-    
+
         await post?.save()
         await user?.save()
 
         res.json({
-            data:comment
+            data: comment
         })
-    }else{
+    } else {
         res.status(500)
         return next({
-            message:"internal server error"
+            message: "internal server error"
         })
     }
 
 
 })
 
-const updateComment = asyncHandler(async(req:any,res:Response,next:any)=>{
+const updateComment = asyncHandler(async (req: any, res: Response, next: any) => {
     const category = await Comment.findOne({ user: req.user })
     if (category) {
         category.description = req.body.comment
@@ -97,7 +97,6 @@ const deleteComment = asyncHandler(async (req: any, res: Response, next: any) =>
         });
     }
 });
-
 
 export {
     createComment,
