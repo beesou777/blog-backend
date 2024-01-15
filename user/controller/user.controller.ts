@@ -17,8 +17,7 @@ const registerUser = asyncHandler(async (req, res, next) => {
     password,
     phone,
     gender,
-    profile = "https://res.cloudinary.com/dasuhyei1/image/upload/v1700654628/ueser_profile.png",
-    isAdmin
+    profile = "https://res.cloudinary.com/dasuhyei1/image/upload/v1700654628/ueser_profile.png"
   } = req.body;
 
   if (!name) {
@@ -60,8 +59,7 @@ const registerUser = asyncHandler(async (req, res, next) => {
     phone,
     profile,
     gender,
-    password,
-    isAdmin,
+    password
   });
   if (user) {
     res.status(201).json({
