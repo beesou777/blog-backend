@@ -64,7 +64,7 @@ const registerUser = asyncHandler(async (req, res, next) => {
   if (user) {
     res.status(201).json({
       user,
-      token: generateToken(user._id)
+      token: generateToken(user._id as string),
     })
   } else {
     res.status(400)
@@ -91,7 +91,7 @@ const loginUser = asyncHandler(async (req, res, next) => {
       phone: user.phone,
       profile: user.profile,
       isAdmin: false,
-      token: generateToken(user._id),
+      token: generateToken(user._id as string),
     })
   } else {
     res.status(400)
@@ -237,13 +237,13 @@ const profileViwe = asyncHandler(async (req: any, res: Response, next: any) => {
   const whoViewd = await User.findById(req.user)
 
   if (user && whoViewd) {
-    const isUserAlreadyViewed = user.viewedBy.find(viewer => viewer.toString() === whoViewd._id.toJSON())
+    const isUserAlreadyViewed = user.viewedBy.find(viewer => viewer.toString() === (whoViewd._id as string).toString())
     if (isUserAlreadyViewed) {
       return next({
         message: "Already viewed"
       })
     } else {
-      user.viewedBy.push(whoViewd._id)
+      user.viewedBy.push(whoViewd._id as string)
       await user.save()
       res.json({ message: "successfully viewed" })
     }
@@ -255,9 +255,9 @@ const followingUser = asyncHandler(async (req: any, res: Response, next: any) =>
     const userToFollow = await User.findById(req.params.id);
     const userWhoFollowed = await User.findById(req.user);
 
-    if (userToFollow && userWhoFollowed && userToFollow?._id.toString() !== userWhoFollowed?._id.toString()) {
+    if (userToFollow && userWhoFollowed && (userToFollow?._id as string).toString() !== (userWhoFollowed?._id as string).toString()) {
       const isUserAlreadyFollowed = userWhoFollowed.following.find(
-        follower => follower.toString() === userToFollow._id.toString()
+        follower => follower.toString() === (userToFollow._id as string).toString()
       );
 
       if (isUserAlreadyFollowed) {
@@ -265,8 +265,8 @@ const followingUser = asyncHandler(async (req: any, res: Response, next: any) =>
           message: "Already followed"
         });
       } else {
-        userToFollow.followers.push(userWhoFollowed._id);
-        userWhoFollowed.following.push(userToFollow._id);
+        userToFollow.followers.push(userWhoFollowed._id as string);
+        userWhoFollowed.following.push(userToFollow._id as string);
 
         await userWhoFollowed.save();
         await userToFollow.save();
@@ -291,20 +291,20 @@ const unfollowUser = asyncHandler(async (req: any, res: Response, next: any) => 
   const userToBeunFollow = await User.findById(req.params.id) // profile to unfollow
   const userWhoUnfollowed = await User.findById(req.user) // logined user
 
-  if (userToBeunFollow && userWhoUnfollowed && userToBeunFollow?._id.toString() !== userWhoUnfollowed?._id.toString()) {
-    const isUserAlreadyFollowed = userToBeunFollow.followers.find(follower => follower.toString() === userWhoUnfollowed._id.toString())
+  if (userToBeunFollow && userWhoUnfollowed && (userToBeunFollow?._id as string).toString() !== (userWhoUnfollowed?._id as string).toString()) {
+    const isUserAlreadyFollowed = userToBeunFollow.followers.find(follower => follower.toString() === (userWhoUnfollowed._id as string).toString())
     if (!isUserAlreadyFollowed) {
       return next({
         message: "you have not followed this user"
       })
     } else {
       userToBeunFollow.followers = userToBeunFollow.followers.filter(
-        follower => follower.toString() !== userWhoUnfollowed._id.toString()
+        follower => follower.toString() !== (userWhoUnfollowed._id as string).toString()
       )
       await userToBeunFollow.save()
 
       userWhoUnfollowed.following = userWhoUnfollowed.following.filter(
-        following => following.toString() !== userToBeunFollow._id.toString()
+        following => following.toString() !== (userToBeunFollow._id as string).toString()
       )
       await userWhoUnfollowed.save()
 

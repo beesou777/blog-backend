@@ -14,10 +14,10 @@ const createComment = asyncHandler(async (req: any, res: Response, next: any) =>
 
     })
     if (comment) {
-        post?.comments.push(comment._id)
+        post?.comments.push((comment._id as string) as string)
 
         const user = await User.findById(req.user)
-        user?.comments.push(comment._id)
+        user?.comments.push((comment._id as string) as string)
 
         await post?.save()
         await user?.save()
@@ -66,21 +66,21 @@ const deleteComment = asyncHandler(async (req: any, res: Response, next: any) =>
         }
 
         // Check if the comment is in both the user's comments and post's comments
-        const isCommentInUser = user.comments.findIndex((commentId) => commentId.toString() === comment._id.toString()) !== -1;
-        const isCommentInPost = post.comments.findIndex((commentId) => commentId.toString() === comment._id.toString()) !== -1;
+        const isCommentInUser = user.comments.findIndex((commentId) => commentId.toString() === (comment._id as string).toString()) !== -1;
+        const isCommentInPost = post.comments.findIndex((commentId) => commentId.toString() === (comment._id as string).toString()) !== -1;
 
         if (isCommentInUser && isCommentInPost) {
             // Remove comment from user's comments array
-            user.comments = user.comments.filter((commentId) => commentId.toString() !== comment._id.toString());
+            user.comments = user.comments.filter((commentId) => commentId.toString() !== (comment._id as string).toString());
 
             // Remove comment from post's comments array
-            post.comments = post.comments.filter((commentId) => commentId.toString() !== comment._id.toString());
+            post.comments = post.comments.filter((commentId) => commentId.toString() !== (comment._id as string).toString());
 
             await user.save();
             await post.save();
 
             // Delete comment from Comment collection
-            await Comment.findOneAndDelete({ _id: comment._id });
+            await Comment.findOneAndDelete({ _id: (comment._id as string) });
 
             res.status(200).json({ message: "Comment deleted successfully" });
         } else {

@@ -66,7 +66,7 @@ const registerUser = (0, express_async_handler_1.default)((req, res, next) => __
     if (user) {
         res.status(201).json({
             user,
-            token: (0, jwt_1.default)(user._id)
+            token: (0, jwt_1.default)(user._id),
         });
     }
     else {
@@ -242,7 +242,7 @@ const profileViwe = (0, express_async_handler_1.default)((req, res, next) => __a
     const user = yield user_model_1.default.findById(req.params.id);
     const whoViewd = yield user_model_1.default.findById(req.user);
     if (user && whoViewd) {
-        const isUserAlreadyViewed = user.viewedBy.find(viewer => viewer.toString() === whoViewd._id.toJSON());
+        const isUserAlreadyViewed = user.viewedBy.find(viewer => viewer.toString() === whoViewd._id.toString());
         if (isUserAlreadyViewed) {
             return next({
                 message: "Already viewed"
@@ -260,7 +260,7 @@ const followingUser = (0, express_async_handler_1.default)((req, res, next) => _
     try {
         const userToFollow = yield user_model_1.default.findById(req.params.id);
         const userWhoFollowed = yield user_model_1.default.findById(req.user);
-        if (userToFollow && userWhoFollowed && (userToFollow === null || userToFollow === void 0 ? void 0 : userToFollow._id.toString()) !== (userWhoFollowed === null || userWhoFollowed === void 0 ? void 0 : userWhoFollowed._id.toString())) {
+        if (userToFollow && userWhoFollowed && (userToFollow === null || userToFollow === void 0 ? void 0 : userToFollow._id).toString() !== (userWhoFollowed === null || userWhoFollowed === void 0 ? void 0 : userWhoFollowed._id).toString()) {
             const isUserAlreadyFollowed = userWhoFollowed.following.find(follower => follower.toString() === userToFollow._id.toString());
             if (isUserAlreadyFollowed) {
                 return res.status(400).json({
@@ -291,7 +291,7 @@ exports.followingUser = followingUser;
 const unfollowUser = (0, express_async_handler_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const userToBeunFollow = yield user_model_1.default.findById(req.params.id); // profile to unfollow
     const userWhoUnfollowed = yield user_model_1.default.findById(req.user); // logined user
-    if (userToBeunFollow && userWhoUnfollowed && (userToBeunFollow === null || userToBeunFollow === void 0 ? void 0 : userToBeunFollow._id.toString()) !== (userWhoUnfollowed === null || userWhoUnfollowed === void 0 ? void 0 : userWhoUnfollowed._id.toString())) {
+    if (userToBeunFollow && userWhoUnfollowed && (userToBeunFollow === null || userToBeunFollow === void 0 ? void 0 : userToBeunFollow._id).toString() !== (userWhoUnfollowed === null || userWhoUnfollowed === void 0 ? void 0 : userWhoUnfollowed._id).toString()) {
         const isUserAlreadyFollowed = userToBeunFollow.followers.find(follower => follower.toString() === userWhoUnfollowed._id.toString());
         if (!isUserAlreadyFollowed) {
             return next({

@@ -42,7 +42,7 @@ const createPost = asyncHandler(async (req: any, res: Response, next: any) => {
     })
 
     if (postCreated) {
-        author?.posts.push(postCreated._id)
+        author?.posts.push(postCreated._id as string)
         await author?.save()
         res.json({
             status: true,
@@ -160,7 +160,7 @@ const deletePost = asyncHandler(async (req: any, res: Response, next: any) => {
             });
         }
 
-        const isPostInUserPosts = user.posts.findIndex((postId) => postId.toString() === post._id.toString());
+        const isPostInUserPosts = user.posts.findIndex((postId) => postId.toString() === (post._id as string).toString());
 
         if (isPostInUserPosts !== -1) {
             user.posts.splice(isPostInUserPosts, 1);
